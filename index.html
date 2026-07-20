@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Notes API — Project 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-badge">P2</span>
+        Student Notes <span class="logo-thin">API</span>
+      </div>
+      <div class="api-status" id="apiStatus">
+        <span class="status-dot"></span>
+        <span id="statusText">Checking...</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="eyebrow">DecodeLabs · Project 2 · Backend API Development</p>
+        <h1>A RESTful API,<br>built from scratch.</h1>
+        <p class="hero-sub">GET, POST, and DELETE endpoints — with data validation,
+          proper HTTP status codes, and JSON responses. No database, no framework — just
+          Node.js + Express.</p>
+        <div class="endpoint-pills">
+          <span class="pill get">GET /api/notes</span>
+          <span class="pill post">POST /api/notes</span>
+          <span class="pill get">GET /api/notes/:id</span>
+          <span class="pill delete">DELETE /api/notes/:id</span>
+          <span class="pill get">GET /api/status</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── DASHBOARD GRID ── -->
+    <div class="dashboard">
+
+      <!-- LEFT: Create Note Form -->
+      <section class="panel" id="createPanel">
+        <h2 class="panel-title">
+          <span class="method-badge post">POST</span>
+          Create a Note
+        </h2>
+        <p class="panel-desc">Sends a POST request to <code>/api/notes</code>. Fields are validated server-side.</p>
+
+        <div class="form-group">
+          <label for="noteTitle">Title <span class="required">*</span></label>
+          <input type="text" id="noteTitle" placeholder="e.g. CSS Grid Basics" maxlength="80" />
+        </div>
+        <div class="form-group">
+          <label for="noteSubject">Subject <span class="required">*</span></label>
+          <select id="noteSubject">
+            <option value="">-- Select subject --</option>
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="Database">Database</option>
+            <option value="DevOps">DevOps</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="noteContent">Content <span class="required">*</span></label>
+          <textarea id="noteContent" rows="4" placeholder="Write your note here..."></textarea>
+        </div>
+        <button class="btn btn-post" id="createBtn">POST — Add Note</button>
+        <div class="response-box" id="createResponse"></div>
+      </section>
+
+      <!-- RIGHT: Fetch Notes -->
+      <section class="panel" id="fetchPanel">
+        <h2 class="panel-title">
+          <span class="method-badge get">GET</span>
+          Fetch Notes
+        </h2>
+        <p class="panel-desc">Sends a GET request to <code>/api/notes</code>. Filter by subject optionally.</p>
+
+        <div class="form-group">
+          <label for="filterSubject">Filter by Subject (optional)</label>
+          <select id="filterSubject">
+            <option value="">All subjects</option>
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="Database">Database</option>
+            <option value="DevOps">DevOps</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fetchId">Fetch by ID (optional)</label>
+          <input type="number" id="fetchId" placeholder="e.g. 1  →  GET /api/notes/1" min="1" />
+        </div>
+        <button class="btn btn-get" id="fetchBtn">GET — Fetch Notes</button>
+        <div class="response-box" id="fetchResponse"></div>
+      </section>
+
+      <!-- BOTTOM: Delete Note -->
+      <section class="panel panel-wide" id="deletePanel">
+        <h2 class="panel-title">
+          <span class="method-badge delete">DELETE</span>
+          Delete a Note
+        </h2>
+        <p class="panel-desc">Sends a DELETE request to <code>/api/notes/:id</code>. Returns 404 if not found.</p>
+        <div class="inline-form">
+          <input type="number" id="deleteId" placeholder="Enter Note ID to delete" min="1" />
+          <button class="btn btn-delete" id="deleteBtn">DELETE — Remove Note</button>
+        </div>
+        <div class="response-box" id="deleteResponse"></div>
+      </section>
+
+      <!-- BOTTOM: All Notes Live List -->
+      <section class="panel panel-wide" id="listPanel">
+        <div class="panel-title-row">
+          <h2 class="panel-title" style="margin:0">
+            <span class="method-badge get">GET</span>
+            Live Notes List
+          </h2>
+          <button class="btn btn-get btn-sm" id="refreshBtn">↻ Refresh</button>
+        </div>
+        <div id="notesList" class="notes-list">
+          <p class="placeholder-text">Click "Refresh" to load all notes.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ── STATUS CODES REFERENCE ── -->
+    <section class="reference">
+      <div class="reference-inner">
+        <p class="eyebrow">Reference</p>
+        <h2>HTTP Status Codes used in this API</h2>
+        <div class="codes-grid">
+          <div class="code-card success">
+            <span class="code-num">200</span>
+            <span class="code-name">OK</span>
+            <span class="code-desc">GET / DELETE success</span>
+          </div>
+          <div class="code-card success">
+            <span class="code-num">201</span>
+            <span class="code-name">Created</span>
+            <span class="code-desc">POST — new note added</span>
+          </div>
+          <div class="code-card error">
+            <span class="code-num">400</span>
+            <span class="code-name">Bad Request</span>
+            <span class="code-desc">Validation failed</span>
+          </div>
+          <div class="code-card error">
+            <span class="code-num">404</span>
+            <span class="code-name">Not Found</span>
+            <span class="code-desc">Note ID doesn't exist</span>
+          </div>
+          <div class="code-card error">
+            <span class="code-num">500</span>
+            <span class="code-name">Server Error</span>
+            <span class="code-desc">Unexpected crash</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>&copy; <span id="year"></span> Student Notes API · DecodeLabs Full Stack Internship · Project 2</p>
+      <p class="footer-stack">Node.js + Express · RESTful API · No frameworks, no database</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
