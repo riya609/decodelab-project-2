@@ -6,7 +6,7 @@ A simple RESTful API built using **Node.js** and **Express.js** as part of the *
 
 ## 📸 Project Preview
 
-![Student Notes API Preview](preview 2.png)
+![Student Notes API Preview](preview2.png)
 
 ---
 
